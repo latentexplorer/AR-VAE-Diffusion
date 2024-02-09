@@ -1,0 +1,79 @@
+# DDPM config used for DDPM training
+ddpm:
+  data:
+    root: ???
+    name: "curlnoise"
+    image_size: 128
+    hflip: True
+    n_channels: 1
+    norm: True
+
+  model:
+    dim : 128
+    attn_resolutions: "16,"
+    n_residual: 2
+    dim_mults: "1,1,2,2,4,4"
+    dropout: 0.2
+    n_heads: 8
+    n_timesteps: 1000
+    # beta1: 0.0001
+    # beta2: 0.02
+
+  training:
+    seed: 0
+    fp16: False
+    use_ema: True
+    z_cond: False
+    z_dim: 1024
+    type: 'form1'
+    ema_decay: 0.995
+    batch_size: 16
+    epochs: 5000
+    log_step: 1
+    device: "gpu:0"
+    chkpt_interval: 1
+    optimizer: "Adam"
+    lr: 1e-4
+    restore_path: ""
+    vae_chkpt_path: ???
+    results_dir: ???
+    workers: 16
+    grad_clip: 1.0
+    n_anneal_steps: 5000
+    loss: "l2"
+    chkpt_prefix: ""
+    cfd_rate: 0.0
+vae:
+  data:
+    root: ???
+    name: "curlnoise"
+    image_size: 128
+    n_channels: 1
+
+  model:
+    z_dim: 1024
+    enc_block_config_str : "128x1,128d2,128t64,64x3,64d2,64t32,32x3,32d2,32t16,16x7,16d2,16t8,8x3,8d2,8t4,4x3,4d4,4t1,1x2"
+    enc_channel_config_str : "128:64,64:64,32:128,16:128,8:256,4:512,1:1024"
+    dec_block_config_str : "1x1,1u4,1t4,4x2,4u2,4t8,8x2,8u2,8t16,16x6,16u2,16t32,32x2,32u2,32t64,64x2,64u2,64t128,128x1"
+    dec_channel_config_str : "128:64,64:64,32:128,16:128,8:256,4:512,1:1024"
+
+   training:   # Most of these are same as explained above but for VAE training
+    seed: 0
+    fp16: False
+    batch_size: 16
+    epochs: 1000
+    log_step: 1
+    device: "gpu:0"
+    chkpt_interval: 1
+    optimizer: "Adam"
+    lr: 1e-4
+    restore_path: ""
+    results_dir: ???
+    workers: 2
+    chkpt_prefix: ""
+    aslr_csv: "" # Location of the csv file used for Attribute related regularisation in the loss function
+    alpha_start: 0  # The beta start value in beta-vae for the frange linear cycle schedule.
+    alpha_stop:  1  # The beta end value in beta-vae for the frange linear cycle schedule.
+    n_cycles:  4  # The number of cycles in linear cycle schedule for the beta-vae.
+    ratio: 0.5  # Ratio used in beta-vae linear cycles.
+    attributes: "size,pixel_density"

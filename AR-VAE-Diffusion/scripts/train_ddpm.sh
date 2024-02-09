@@ -1,0 +1,44 @@
+# python main/train_ddpm.py +dataset=curlnoise/train \
+#                      dataset.ddpm.data.root='"data_path"' \
+#                      dataset.ddpm.data.name='curlnoise' \
+#                      dataset.ddpm.data.norm=True \
+#                      dataset.ddpm.data.hflip=True \
+#                      dataset.ddpm.model.dim=128 \
+#                      dataset.ddpm.model.dropout=0.2 \
+#                      dataset.ddpm.model.attn_resolutions=\'16,\' \
+#                      dataset.ddpm.model.n_residual=2 \
+#                      dataset.ddpm.model.dim_mults=\'1,1,2,2,4,4\' \
+#                      dataset.ddpm.model.n_heads=8 \
+#                      dataset.ddpm.training.type='form1' \
+#                      dataset.ddpm.training.cfd_rate=0.0 \
+#                      dataset.ddpm.training.epochs=1000 \
+#                      dataset.ddpm.training.z_cond=False \
+#                      dataset.ddpm.training.batch_size=8 \
+#                      dataset.ddpm.training.vae_chkpt_path=''\
+#                      dataset.ddpm.training.device=\'gpu:0\' \
+#                      dataset.ddpm.training.results_dir='results_path' \
+#                      dataset.ddpm.training.workers=8 \
+#                      dataset.ddpm.training.chkpt_prefix='128DifVAE_dropout_cyclic'
+
+python main/train_ddpm.py +dataset=abstractart/train \
+                     dataset.ddpm.data.root=\'/home/anonymized/ASLR_DiffuseVAE/dataset/abstract-art/images\' \
+                     dataset.ddpm.data.name='abstractart' \
+                     dataset.ddpm.data.norm=True \
+                     dataset.ddpm.data.hflip=True \
+                     dataset.ddpm.model.dim=128 \
+                     dataset.ddpm.model.dropout=0.1 \
+                     dataset.ddpm.model.attn_resolutions=\'16,\' \
+                     dataset.ddpm.model.n_residual=2 \
+                     dataset.ddpm.model.dim_mults=\'1,1,2,2,4,4\' \
+                     dataset.ddpm.model.n_heads=8 \
+                     dataset.ddpm.training.type='form1' \
+                     dataset.ddpm.training.cfd_rate=0.0 \
+                     dataset.ddpm.training.epochs=1000 \
+                     dataset.ddpm.training.z_cond=False \
+                     dataset.ddpm.training.batch_size=32 \
+                     dataset.ddpm.training.vae_chkpt_path=\'/home/anonymized/ASLR_DiffuseVAE/results/abstractart_vae/vae-second_training-epoch=999-train_loss=0.0000.ckpt\'\
+                     dataset.ddpm.training.device=\'gpu:0\' \
+                     dataset.ddpm.training.results_dir=\'/home/anonymized/ASLR_DiffuseVAE/results/abstractart_ddpm/\' \
+                     dataset.ddpm.training.workers=8 \
+                     dataset.ddpm.training.chkpt_prefix='VAE1000_abstractart'
+                     

@@ -1,0 +1,83 @@
+# DDPM config used for DDPM training
+ddpm:
+  data:
+    root: "/home/anonymized/ASLR_DiffuseVAE/dataset/abstract-art/images" # Dataset root
+    name: "abstractart" # Dataset name (check main/util.py `get_dataset` for a registry)
+    image_size: 128 # Image resolution
+    hflip: True # Whether to use horizontal flip (and vertical flip)
+    n_channels: 3  # Num input channels
+    norm: True  # Whether to scale data between [-1, 1]
+
+  model:  # UNet specific params. Check the DDPM implementation for details on these
+    dim : 128
+    attn_resolutions: "16,"
+    n_residual: 2
+    dim_mults: "1,1,2,2,4,4"
+    dropout: 0.00
+    n_heads: 8
+    n_timesteps: 1000
+    beta1: 0.0001
+    beta2: 0.02
+
+  training:
+    seed: 0 # Random seed
+    fp16: False # Whether to use fp16
+    use_ema: True  # Whether to use EMA (Improves sample quality)
+    z_cond: False # Whether to condition UNet on vae latent
+    z_dim: 1024 # Dimensionality of the vae latent
+    type: 'form1'   # DiffuseVAE type. One of ['form1', 'form2', 'uncond']. `uncond` is baseline DDPM
+    ema_decay: 0.9995   # EMA decay rate
+    batch_size: 32 # Training batch size (per GPU, per TPU core if using distributed training)
+    epochs: 5000 # Max number of epochs
+    log_step: 1 # log interval
+    device: "gpu:0" # Device. Uses TPU/CPU if set to `tpu` or `cpu`. For GPU, use gpu:<comma separated id list>. Ex: gpu:0,1 would run only on gpus 0 and 1 
+    chkpt_interval: 1 # Number of epochs between two checkpoints
+    optimizer: "Adam" # Optimizer
+    lr: 1e-4 # Learning rate
+    restore_path: "" # Checkpoint restore path
+    vae_chkpt_path: ""  # VAE checkpoint path. Useful when using form1 or form2
+    results_dir: ""  # Directory to store the checkpoint in
+    workers: 16 # Num workers
+    grad_clip: 1.0  # gradient clipping threshold
+    n_anneal_steps: 5000 # number of warmup steps
+    loss: "l2"  # Diffusion loss type. Among ['l2', 'l1']
+    chkpt_prefix: ""  # prefix appended to the checkpoint name
+    cfd_rate: 0.0 # Conditioning signal dropout rate as in Classifier-free guidance
+vae:
+  data:
+    root: "/home/anonymized/ASLR_DiffuseVAE/dataset/abstract-art/images"
+    name: "abstractart"
+    image_size: 128
+    n_channels: 3
+    hflip: True
+
+  model:
+    z_dim: 1024
+    enc_block_config : "128x1,128d2,128t64,64x3,64d2,64t32,32x3,32d2,32t16,16x7,16d2,16t8,8x3,8d2,8t4,4x3,4d4,4t1,1x2"
+    enc_channel_config : "128:64,64:64,32:128,16:128,8:256,4:512,1:1024"
+    dec_block_config : "1x1,1u4,1t4,4x2,4u2,4t8,8x2,8u2,8t16,16x6,16u2,16t32,32x2,32u2,32t64,64x2,64u2,64t128,128x1"
+    dec_channel_config : "128:64,64:64,32:128,16:128,8:256,4:512,1:1024"
+
+  training:   # Most of these are same as explained above but for VAE training
+    seed: 0
+    fp16: False
+    batch_size: 32
+    epochs: 1000
+    log_step: 1
+    device: "gpu:0"
+    chkpt_interval: 1
+    optimizer: "Adam"
+    lr: 1e-4
+    restore_path: ""
+    results_dir: "/home/anonymized/ASLR_DiffuseVAE/results/abstractart_vae"
+    workers: 16
+    chkpt_prefix: ""
+    alsr_csv: "/home/anonymized/ASLR_DiffuseVAE/dataset/abstract-art/attribute_data.csv" # Location of the csv file used for Attribute related regularisation in the loss function
+    alpha_start: 0  # The beta start value in beta-vae for the frange linear cycle schedule. (Currently removed from implementation)
+    alpha_stop:  1  # The beta end value in beta-vae for the frange linear cycle schedule.
+    n_cycle:  4  # The number of cycles in linear cycle schedule for the beta-vae.
+    ratio: 0.5  # Ratio used in beta-vae linear cycles.
+    attributes: "structural_complexity,color_diversity" # attributes for ar-vae
+    gamma: 10 # ALSR specific gamma 
+    delta: 3  # ALSR specific delta
+    alpha: 1 # Beta value for beta vae if cyclic annealing not implemented
